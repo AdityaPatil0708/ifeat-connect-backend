@@ -39,14 +39,14 @@ authRouter.post("/login", async (req, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: req.secure,
     maxAge: COOKIE_MAX_AGE,
   });
   res.json({ user });
 });
 
-authRouter.post("/logout", (_req, res) => {
-  res.clearCookie("token");
+authRouter.post("/logout", (req, res) => {
+  res.clearCookie("token", { httpOnly: true, sameSite: "lax", secure: req.secure });
   res.status(204).end();
 });
 
