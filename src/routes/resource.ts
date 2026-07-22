@@ -19,5 +19,19 @@ export function makeResourceRouter(model: Model<any>, prefix: string) {
     res.status(201).json(created);
   });
 
+  router.patch("/:id", async (req, res) => {
+    const updated = await model.findOneAndUpdate({ id: req.params.id }, req.body ?? {}, {
+      new: true,
+    });
+    if (!updated) return res.status(404).json({ error: "Not found" });
+    res.json(updated);
+  });
+
+  router.delete("/:id", async (req, res) => {
+    const deleted = await model.findOneAndDelete({ id: req.params.id });
+    if (!deleted) return res.status(404).json({ error: "Not found" });
+    res.status(204).end();
+  });
+
   return router;
 }
